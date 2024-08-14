@@ -1,0 +1,183 @@
+openapi: 3.0.0
+info:
+  title: Announcement Board API
+  description: API for managing announcements and categories in a city announcement board application.
+  version: 1.0.0
+servers:
+  - url: http://localhost:5000
+    description: Local server
+
+components:
+  schemas:
+    Announcement:
+      type: object
+      properties:
+        id:
+          type: integer
+        title:
+          type: string
+        content:
+          type: string
+        publicationDate:
+          type: string
+          format: date-time
+        categories:
+          type: array
+          items:
+            $ref: '#/components/schemas/Category'
+        updatedAt:
+          type: string
+          format: date-time
+    Category:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+    Pagination:
+      type: object
+      properties:
+        currentPage:
+          type: integer
+        pageSize:
+          type: integer
+        totalCount:
+          type: integer
+        totalPages:
+          type: integer
+    AnnouncementRequest:
+      type: object
+      properties:
+        title:
+          type: string
+        content:
+          type: string
+        publicationDate:
+          type: string
+          format: date-time
+        categoryIds:
+          type: array
+          items:
+            type: integer
+    MessageResponse:
+      type: object
+      properties:
+        message:
+          type: string
+
+paths:
+  /announcements:
+    get:
+      summary: Get a list of announcements
+      parameters:
+        - name: page
+          in: query
+          description: Page number for pagination
+          schema:
+            type: integer
+            example: 1
+        - name: limit
+          in: query
+          description: Number of announcements per page
+          schema:
+            type: integer
+            example: 3
+      responses:
+        '200':
+          description: A list of announcements with pagination info
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  announcements:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Announcement'
+                  pagination:
+                    $ref: '#/components/schemas/Pagination'
+    post:
+      summary: Create a new announcement
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AnnouncementRequest'
+      responses:
+        '201':
+          description: Announcement created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Announcement'
+
+  /announcements/{id}:
+    get:
+      summary: Get an announcement by ID
+      parameters:
+        - name: id
+          in: path
+          description: ID of the announcement to retrieve
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Announcement details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Announcement'
+    put:
+      summary: Update an announcement
+      parameters:
+        - name: id
+          in: path
+          description: ID of the announcement to update
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AnnouncementRequest'
+      responses:
+        '200':
+          description: Announcement updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Announcement'
+    delete:
+      summary: Delete an announcement
+      parameters:
+        - name: id
+          in: path
+          description: ID of the announcement to delete
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Announcement deleted successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MessageResponse'
+
+  /categories:
+    get:
+      summary: Get a list of categories
+      responses:
+        '200':
+          description: A list of categories
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Category'
