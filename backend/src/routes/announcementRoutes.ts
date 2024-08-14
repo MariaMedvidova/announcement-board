@@ -1,18 +1,18 @@
 import { Router } from 'express';
 import {
-  getAnnouncements,
-  createAnnouncement,
-  getAnnouncementById,
-  updateAnnouncement,
-  deleteAnnouncement,
+  getAnnouncementsController,
+  createAnnouncementController,
+  getAnnouncementByIdController,
+  updateAnnouncementController,
+  deleteAnnouncementController,
 } from '../controllers/announcementController';
 
 const router = Router();
 
-router.get('/', getAnnouncements);
-router.post('/', createAnnouncement);
-router.get('/:id', getAnnouncementById);
-router.put('/:id', updateAnnouncement);
-router.delete('/:id', deleteAnnouncement);
+router.get('/', getAnnouncementsController);
+router.post('/', createAnnouncementController);
+router.get('/:id', getAnnouncementByIdController);
+router.put('/:id', updateAnnouncementController);
+router.delete('/:id', deleteAnnouncementController);
 
 export default router;
